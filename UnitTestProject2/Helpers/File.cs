@@ -6,17 +6,8 @@ using OpenQA.Selenium;
 
 namespace UnitTestProject1
 {
-    public class WorkWithFile
+    public class FileHelper
     {
-        public void WriteCookieInFile(string nameFile, ReadOnlyCollection<OpenQA.Selenium.Cookie> cookie, IFormatter formatter)
-        {
-            using (Stream stream = new FileStream(nameFile, FileMode.Create, FileAccess.Write, FileShare.None))
-            {
-                formatter.Serialize(stream, cookie);
-                stream.Close();
-            }
-        }
-
         public void WriteCookiesToFile(string nameFile, ReadOnlyCollection<Cookie> lastVisitCookie)
         {
             if (File.Exists(nameFile))
@@ -35,7 +26,7 @@ namespace UnitTestProject1
             }
         }
 
-        public Collection<Cookie> readCookiesFromFile(string nameFileCookie)
+        public Collection<Cookie> ReadCookiesFromFile(string nameFileCookie)
         {
             Collection<Cookie> cookieColletion = new Collection<Cookie>();
             Cookie cookie;
