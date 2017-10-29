@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Runtime.Serialization;
 using OpenQA.Selenium;
+using OpenQA.Selenium.Remote;
 
-namespace UnitTestProject1
+namespace CokieQAA
 {
     public class FileHelper
     {
-        public void WriteCookiesToFile(string nameFile, ReadOnlyCollection<Cookie> lastVisitCookie)
+        public void WriteCookiesToFile(string nameFile, IWebDriver driver)
         {
+            var cookieLastVisit = driver.Manage().Cookies.AllCookies;
+
             if (File.Exists(nameFile))
             {
                 File.Delete(nameFile);
@@ -17,7 +19,7 @@ namespace UnitTestProject1
 
             using (StreamWriter sw = new StreamWriter(nameFile, true, System.Text.Encoding.Default))
             {
-                foreach (OpenQA.Selenium.Cookie cookie in lastVisitCookie)
+                foreach (Cookie cookie in cookieLastVisit)
                 {
                     sw.WriteLine((cookie.Name + ";" + cookie.Value + ";" +
                       cookie.Domain + ";" + cookie.Path + ";" + cookie.Expiry +
@@ -29,7 +31,6 @@ namespace UnitTestProject1
         public Collection<Cookie> ReadCookiesFromFile(string nameFileCookie)
         {
             Collection<Cookie> cookieColletion = new Collection<Cookie>();
-            Cookie cookie;
             using (StreamReader sr = new StreamReader(nameFileCookie, System.Text.Encoding.Default))
             {
                 string name, value, domain, path;
@@ -46,7 +47,7 @@ namespace UnitTestProject1
                     path = array[3];
                     expire = array[4].Equals("") ? DateTime.Now.AddDays(14) : Convert.ToDateTime(array[4]);
 
-                    cookie = new Cookie(name, value, domain, path, expire);
+                    Cookie cookie = new Cookie(name, value, domain, path, expire);
                     cookieColletion.Add(cookie);
                 }
             }
